@@ -1,14 +1,34 @@
 import Snake from "./objects/snake.js";
+import Apple from './objects/apple.js'
 
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 
-let player = new Snake(100, 100, 20);
+let grid = {
+  xCells: 60,
+  yCells: 40,
+  size: 16
+}
+let gameState = 'PAUSED';
+
+let setGameState = (state) => {
+  gameState = state;
+}
+let player = new Snake(grid.size * 5, grid.size * 5, grid);
+let apple = new Apple(grid.size * 20, grid.size * 5, grid);
+
+
 let init = () => {
-  canvas.width = 800;
-  canvas.height = 600;
+  canvas.width = grid.xCells * grid.size;
+  canvas.height = grid.yCells * grid.size;
+  gameState = 'RUNNING';
   window.requestAnimationFrame(gameLoop);
 };
+
+document.addEventListener('keydown', (e) => {
+  player.changeDirection(e.keyCode);
+})
+
 //---------------------------------
 let secondsPassed;
 let oldTimeStamp;
@@ -21,13 +41,24 @@ let draw = () => {
   ctx.fillStyle = "#666666";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   player.draw(ctx);
+  apple.draw(ctx);
 };
 
 let update = (timeStamp) => {
-  if (timeStamp - lastUpdate >= 125) {
+  if (gameState === 'RUNNING') {
+    if (timeStamp - lastUpdate >= 40) {
       lastUpdate = timeStamp;
-    player.update();
-    draw();
+      player.update(apple, setGameState);
+      apple.update()
+      draw();
+    }
+  } else if(gameState === 'DEAD') {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "30px Arial";
+    ctx.fillText("You're Dead!", canvas.width / 2 - 90, canvas.height/2);
   }
 };
 function gameLoop(timeStamp) {
