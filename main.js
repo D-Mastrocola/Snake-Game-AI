@@ -5,9 +5,9 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 
 let grid = {
-  xCells: 60,
-  yCells: 40,
-  size: 16
+  xCells: 50,
+  yCells: 30,
+  size: 20
 }
 let gameState = 'PAUSED';
 
@@ -38,10 +38,14 @@ let lastUpdate = 0;
 
 let draw = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#666666";
+  ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   player.draw(ctx);
   apple.draw(ctx);
+
+  ctx.fillStyle = '#fff';
+  ctx.font = '48px serif';
+  ctx.fillText('Score: ' + player.score, 10, 50);
 };
 
 let update = (timeStamp) => {

@@ -8,9 +8,16 @@ class Apple {
       yCells: grid.yCells
     }
   }
-  changePosition() {
-    this.x = Math.round(Math.random() * this.canvas.xCells) * this.size;
-    this.y = Math.round(Math.random() * this.canvas.yCells) * this.size;
+  changePosition(snakeX, snakeY, snakeTail) {
+    this.x = Math.floor(Math.random() * this.canvas.xCells) * this.size;
+    this.y = Math.floor(Math.random() * this.canvas.yCells) * this.size;
+    if(this.x == snakeX && this.y == snakeY) this.changePosition(snakeX, snakeY, snakeTail);
+
+    for(let i = 0; i < snakeTail.length; i++) {
+      let snakeTailX = snakeTail[i][0];
+      let snakeTailY = snakeTail[i][1];
+      if(this.x == snakeTailX && this.y == snakeTailY) this.changePosition(snakeX, snakeY, snakeTail);
+    }
   }
   update() { }
   draw(ctx) {
